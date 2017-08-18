@@ -123,7 +123,7 @@ else
         
     end
 %     
-SignalModel1 = @(E) simulateDESPOTvoxel_complexCF(E(1)+1i.*E(2),x0(3),(x0(4)),(x0(5)),rf_phase_incr,...
+SignalModel1 = @(E) simulateJSRvoxel_complexCF(E(1)+1i.*E(2),x0(3),(x0(4)),(x0(5)),rf_phase_incr,...
             TRspgr,TRssfp,TE,alpha_spgr,alpha_ssfp,rf_trms);
         
     CostFunction1    = @(E) noisySignal(:) - SignalModel1(E);

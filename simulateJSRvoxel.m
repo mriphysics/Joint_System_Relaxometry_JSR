@@ -62,7 +62,7 @@ if length(b0) == 1
     b0 = b0.*ones(Nssfp,1);
 end
 
-b0 = b0.*2.*pi.*TRssfp.*10^-3; % convert from Hz to radians of precession per TR
+b0 = b0.*2.*pi.*TRssfp; % convert from Hz to radians of precession per TR
 % amount of precession due to b0 inhomogeniety and increment of rf applied
 % rf phase results in a some of (angles) page 212 Magnetic Reonance
 % Imaging - Theory and Practice springer, M.T. Vlaardingerbroek and J.A.

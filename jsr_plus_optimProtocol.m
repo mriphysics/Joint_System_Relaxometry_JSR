@@ -18,9 +18,9 @@ pauseFlag = false;
 % warning('off','all')
 % warning
 %%
-for Nmprage = [0:9]
-    for Nspgr = [0:9]
-        for Nssfp = [4:9]
+for Nmprage = [1:2]
+    for Nspgr = [0:2]
+        for Nssfp = [4:5]
             for trialN = 1:Ntrials
                 if pauseFlag
                     Nmprage = Nmprage_tmp;
@@ -52,7 +52,7 @@ for Nmprage = [0:9]
                 alpha_mprage    = deg2rad(6 + (90-2).*rand(1,Nmprage));
                 TI              = TRmprage;
                 TD              = TRmprage;
-                TFEfactor       = 50 + (1000-50).*rand(1,Nmprage);
+                TFEfactor       = 50 + (3000-50).*rand(1,Nmprage);
                 t_rage          = TFEfactor.*TRmprage;
                 TEmprage        = TRssfp/2;
                 
@@ -64,7 +64,7 @@ for Nmprage = [0:9]
                 TRspgr      = 12 + (100-12).*rand(1,Nspgr);
                 TEspgr      = TRssfp./2;
                 
-                [optimizedFAset{Nmprage+1,Nspgr+1,Nssfp+1,trialN},fval{Nspgr+1,Nssfp+1,trialN}] = JSRplus_FindOptimSet(rM0, iM0, R1, R2, b0, b1,...
+                [optimizedFAset{Nmprage+1,Nspgr+1,Nssfp+1,trialN},fval{Nmprage,Nspgr+1,Nssfp+1,trialN}] = JSRplus_FindOptimSet(rM0, iM0, R1, R2, b0, b1,...
                     TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
                     TRspgr, TEspgr, alpha_spgr,...
                     TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms);%M0,T1,T2,b0,rf_phase_incr,TRspgr,alpha_spgr,alpha_ssfp,rf_trms,b1);
@@ -82,3 +82,39 @@ end
 % 
 % warning('on','all')
 % warning('query','all')
+%%
+load('Optimization_2.mat')
+for Nmprage = [1:2]
+    for Nspgr = [0:2]
+        for Nssfp = [4:5]
+            for trialN = 1:Ntrials
+                if isempty(fval{Nmprage+1,Nspgr+1,Nssfp+1,trialN})
+                    fvalArray(Nmprage+1,Nspgr+1,Nssfp+1,trialN) = NaN;
+                else
+                    fvalArray(Nmprage+1,Nspgr+1,Nssfp+1,trialN) = fval{Nmprage+1,Nspgr+1,Nssfp+1,trialN};
+                end
+                
+            end
+        end
+    end
+end
+
+
+for Nmprage = [1:2]
+    for Nspgr = [0:2]
+        for Nssfp = [4:5]
+            [fvalsorted{Nmprage+1,Nspgr+1,Nssfp+1}, sortingTrialIdx{Nmprage+1,Nspgr+1,Nssfp+1}] = sort(squeeze(fvalArray(Nmprage+1,Nspgr+1,Nssfp+1,:)),'ascend');
+            for trialN = 1:Ntrials
+                rankedProtocol{Nmprage+1,Nspgr+1,Nssfp+1,trialN} = optimizedFAset{Nmprage+1,Nspgr+1,Nssfp+1,sortingTrialIdx{Nmprage+1,Nspgr+1,Nssfp+1}(trialN)};             
+            end
+        end
+    end
+end
+   
+for Nmprage = [1:2]
+    for Nspgr = [0:2]
+        for Nssfp = [4:5]
+            PerformanceMatrix(Nmprage+1,Nspgr+1,Nssfp+1) = fvalsorted{Nmprage+1,Nspgr+1,Nssfp+1}(1);
+        end
+    end
+end

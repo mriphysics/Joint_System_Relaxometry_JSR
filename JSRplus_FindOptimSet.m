@@ -181,7 +181,7 @@ lb(alpha_ssfpIdx)   = deg2rad(6);
 % lb(phi_ssfpIdx)     = phi_ssfp;
 
 % Define upper bounds for parameters to be optimized
-ub(TRmprageIdx)     = maxTR;
+ub(TRmprageIdx)     = 20;
 ub(alpha_mprageIdx) = deg2rad(90);
 ub(TFE_factorIdx)   = 3000;
 ub(TRspgrIdx)       = 20;

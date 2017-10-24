@@ -8,11 +8,11 @@ minTR_spgr      = 7;  %as with ssfp doesn't require 180 reference. min set becau
 
 
 M0 = complex(10,0);
-[rM0,iM0,R1,R2,b0,b1] = ndgrid(1e1,1e1,[1./2200],[1./180],-150:1:150,[0.8:0.1:1.2]);
+[rM0,iM0,R1,R2,b0,b1] = ndgrid(1e1,1e1,[1./2200],[1./180],0,[0.8:0.1:1.2]);
 rf_trms = (1.2*3.2/2.1362);
 % idx2delete = find((T1 == 1200 & T2 == 50) | (T1==800 & T2 == 80));
-% optimizedFAset  = cell(10, 10, 10, Ntrials);
-% fval            = cell(10, 10, 10, Ntrials);
+optimizedFAset  = cell(10, 10, 10, Ntrials);
+fval            = cell(10, 10, 10, Ntrials);
 pauseFlag = false;
 
 % warning('off','all')
@@ -20,7 +20,7 @@ pauseFlag = false;
 %%
 for Nmprage = [0:9]
     for Nspgr = [0:9]
-        for Nssfp = [2:9]
+        for Nssfp = [4:9]
             for trialN = 1:Ntrials
                 if pauseFlag
                     Nmprage = Nmprage_tmp;
@@ -36,7 +36,7 @@ for Nmprage = [0:9]
                 if ~isempty(optimizedFAset{Nspgr+1,Nssfp+1,trialN})
                     continue;
                 end
-                if Nmprage + Nspgr + Nssfp < 6
+                if ((Nmprage + Nspgr + Nssfp < 6)||(Nmprage*12 + Nspgr*7 + Nssfp*7 > 100))
                     disp('Less then 6 measurements, ignore iteration');
                     Nmprage_tmp = Nmprage;
                     Nspgr_tmp = Nspgr;
@@ -45,6 +45,7 @@ for Nmprage = [0:9]
                     pauseFlag = false;
                     continue;
                 end
+                
                 
                 %% For each trial Generate random starting points from Uniform distribution
                 TRmprage        = 12 + (100-12).*rand(1,Nmprage);
@@ -56,7 +57,7 @@ for Nmprage = [0:9]
                 TEmprage        = TRssfp/2;
                 
                 alpha_ssfp  = deg2rad(6 + (90-6).*rand(1,Nssfp));
-                phi_ssfp    = 0 + (2*pi - 0).*rand(1,Nssfp);
+                phi_ssfp    = [pi.*ones(1,Nssfp-2) 0 0];
                 TEssfp      = TRssfp./2;
                 
                 alpha_spgr  = deg2rad(6 + (90-2).*rand(1,Nspgr));
@@ -73,7 +74,7 @@ for Nmprage = [0:9]
                 Nssfp_tmp = Nssfp;
                 trialN_tmp = trialN;
                 pauseFlag = false;
-                save('Optimization')
+                save('Optimization_2')
             end
         end
     end

@@ -71,7 +71,7 @@ Sssfp = M0.*exp(1i*b02).*exp(-TEssfp.*R2).*(Mex+1i.*Mey);
 
 %% Now put everything in array to be exported
 % S = [real(Smprage);imag(Smprage);real(Sspgr);imag(Sspgr);real(Sssfp);imag(Sssfp)];
-S = [(Smprage);(Sspgr);real(Sssfp);imag(Sssfp)];
+S = [(Smprage(:));(Sspgr(:));real(Sssfp(:));imag(Sssfp(:))];
 
 if nargout > 1
     %     J2 = [Jmprage;Jspgr;Jssfp];

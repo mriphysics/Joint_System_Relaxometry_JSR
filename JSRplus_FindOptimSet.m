@@ -34,7 +34,7 @@ if (Nmprage > 0)&&(Nspgr > 0)
     alpha_spgrIdx   = TRspgrIdx(end)        + 1 : TRspgrIdx(end)        + Nspgr;
     
     alpha_ssfpIdx   = alpha_spgrIdx(end)    + 1 : alpha_spgrIdx(end)    + Nssfp;
-    phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)    + Nssfp;
+%     phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)    + Nssfp;
     
     % the non linear constraint needs to be dynamically generated
     disp('Generating constraint file...');
@@ -57,7 +57,7 @@ if (Nmprage > 0)&&(Nspgr > 0)
     x0(TRspgrIdx)       = TRspgr;
     x0(alpha_spgrIdx)   = alpha_spgr;
     x0(alpha_ssfpIdx)   = alpha_ssfp;
-    x0(phi_ssfpIdx)     = phi_ssfp;
+%     x0(phi_ssfpIdx)     = phi_ssfp;
     
 elseif (Nmprage == 0)&&(Nspgr > 0)
     
@@ -70,7 +70,7 @@ elseif (Nmprage == 0)&&(Nspgr > 0)
     alpha_spgrIdx   = TRspgrIdx(end)        + 1 : TRspgrIdx(end)        + Nspgr;
     
     alpha_ssfpIdx   = alpha_spgrIdx(end)    + 1 : alpha_spgrIdx(end)    + Nssfp;
-    phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)    + Nssfp;
+%     phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)    + Nssfp;
     
     % the non linear constraint needs to be dynamically generated
     disp('Generating constraint file...');
@@ -93,7 +93,7 @@ elseif (Nmprage == 0)&&(Nspgr > 0)
     x0(TRspgrIdx)       = TRspgr;
     x0(alpha_spgrIdx)   = alpha_spgr;
     x0(alpha_ssfpIdx)   = alpha_ssfp;
-    x0(phi_ssfpIdx)     = phi_ssfp;
+%     x0(phi_ssfpIdx)     = phi_ssfp;
     
 elseif (Nmprage > 0)&&(Nspgr == 0)
     
@@ -106,7 +106,7 @@ elseif (Nmprage > 0)&&(Nspgr == 0)
     alpha_spgrIdx   = [];
     
     alpha_ssfpIdx   = TRmprageIdx(end)      + 1 : TRmprageIdx(end)    + Nssfp;
-    phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)    + Nssfp;
+%     phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)    + Nssfp;
     
     % the non linear constraint needs to be dynamically generated
     disp('Generating constraint file...');
@@ -129,7 +129,7 @@ elseif (Nmprage > 0)&&(Nspgr == 0)
     x0(TRspgrIdx)       = TRspgr;
     x0(alpha_spgrIdx)   = alpha_spgr;
     x0(alpha_ssfpIdx)   = alpha_ssfp;
-    x0(phi_ssfpIdx)     = phi_ssfp;
+%     x0(phi_ssfpIdx)     = phi_ssfp;
     
 elseif (Nmprage == 0)&&(Nspgr == 0)
     %% Next step consider when there's no SPGR and all other sequences are used:
@@ -141,7 +141,7 @@ elseif (Nmprage == 0)&&(Nspgr == 0)
     alpha_spgrIdx   = [];
     
     alpha_ssfpIdx   = 1                         : Nssfp;
-    phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)  + Nssfp;
+%     phi_ssfpIdx     = alpha_ssfpIdx(end)    + 1 : alpha_ssfpIdx(end)  + Nssfp;
     
     % the non linear constraint needs to be dynamically generated
     disp('Generating constraint file...');
@@ -164,7 +164,7 @@ elseif (Nmprage == 0)&&(Nspgr == 0)
     x0(TRspgrIdx)       = TRspgr;
     x0(alpha_spgrIdx)   = alpha_spgr;
     x0(alpha_ssfpIdx)   = alpha_ssfp;
-    x0(phi_ssfpIdx)     = phi_ssfp;
+%     x0(phi_ssfpIdx)     = phi_ssfp;
     
 end
 
@@ -178,7 +178,7 @@ lb(TFE_factorIdx)   = 50;
 lb(TRspgrIdx)       = minTR;
 lb(alpha_spgrIdx)   = deg2rad(6);
 lb(alpha_ssfpIdx)   = deg2rad(6);
-lb(phi_ssfpIdx)     = phi_ssfp;
+% lb(phi_ssfpIdx)     = phi_ssfp;
 
 % Define upper bounds for parameters to be optimized
 ub(TRmprageIdx)     = maxTR;
@@ -187,7 +187,7 @@ ub(TFE_factorIdx)   = 1000;
 ub(TRspgrIdx)       = maxTR;
 ub(alpha_spgrIdx)   = deg2rad(90);
 ub(alpha_ssfpIdx)   = deg2rad(90);
-ub(phi_ssfpIdx)     = phi_ssfp;
+% ub(phi_ssfpIdx)     = phi_ssfp;
 
 
 %% Create cost function
@@ -195,7 +195,7 @@ ub(phi_ssfpIdx)     = phi_ssfp;
 CostFunction = @(X) JSRplus_CRLB_grid(rM0grid, iM0grid, R1grid, R2grid, b0grid, b1grid,...
     X(TRmprageIdx), TEmprage, X(alpha_mprageIdx), X(TRmprageIdx).*round(X(TFE_factorIdx)), X(TRmprageIdx), X(TRmprageIdx), ...
     X(TRspgrIdx), TEspgr, X(alpha_spgrIdx),...
-    TRssfp, TEssfp, X(alpha_ssfpIdx), X(phi_ssfpIdx), rf_trms);
+    TRssfp, TEssfp, X(alpha_ssfpIdx), phi_ssfp(:), rf_trms);
 
 
 %%
@@ -211,13 +211,13 @@ options.CompletePoll = 'on';
 options.CompleteSearch = 'on';
 options.MeshAccelerator = 'on';
 options.Cache = 'on';
-options.TolFun = 1e-1;
-options.TolMesh = 1e-3;
+options.TolFun = 1;
+options.TolMesh = 1e-6;
 % options.InitialMeshSize = 1e3;
 options.MaxIter = 5;
 options.MaxFunEvals = 1e12;
 % options.InitialPenalty = 1e4;
-options.ScaleMesh = 'off';
+options.ScaleMesh = 'on';
 % options.PollMethod = 'random';
 options.UseParallel = false;
 % options.MaxIter     = 310;

@@ -12,8 +12,9 @@ function [E_parameters, resNorm, res, exitFlag] = fitJSRplus(noisyS,...
 knownB1 = false; % default is that we don't know B1 and which to estimate it
 
 for ii=1:length(varargin)
-    if strcmp(varargin{ii},'knownB1');
+    if strcmp(varargin{ii},'knownB1')
         knownB1 = true;
+        b1 = varargin{ii+1};
     end
 end
 
@@ -37,22 +38,52 @@ if isempty(options)
 end
 
 if knownB1
-    
+    try
+        [S] = @(E) simulateJSRplus(E(1)+1i*E(2), x0(3), x0(4), x0(5), b1,...
+            TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
+            TRspgr, TEspgr, alpha_spgr,...
+            TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms);
+        CF = @(E) (S(E) - noisyS(:));
+        [E_tmp] = lsqnonlin(CF,x0(1:2),lb,ub,options(1));
+        x0(1:2) = E_tmp;
+        x0(6) = [];
+        
+        [S] = @(E) simulateJSRplus(E(1)+1i*E(2), E(3), E(4), E(5), b1,...
+            TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
+            TRspgr, TEspgr, alpha_spgr,...
+            TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms);
+        CF = @(E) (S(E) - noisyS(:));
+        [E_parameters,resNorm,res,exitFlag] = lsqnonlin(CF,x0,lb,ub,options(2));
+    catch ME
+        E_parameters = zeros(1,5);
+        resNorm = 0;
+        res = zeros(1,length([alpha_mprage(:); alpha_spgr(:); alpha_ssfp(:);alpha_ssfp(:)]));
+        exitFlag = 999;
+        disp('Error in lsqnonlin');
+    end
 else
-
-
-    [E_tmp] = lsqnonlin(@(E) JSRplus_CF(...
-        [E(1) E(2) x0(3) x0(4) x0(5) x0(6)],...
-        TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
-        TRspgr, TEspgr, alpha_spgr,...
-        TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms,noisyS),x0(1:2),lb,ub,options(1));
-    x0(1:2) = E_tmp;
-    
-    [E_parameters,resNorm,res,exitFlag] = lsqnonlin(@(E) JSRplus_CF(...
-        E,...
-        TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
-        TRspgr, TEspgr, alpha_spgr,...
-        TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms,noisyS),x0,lb,ub,options(2));
+    try
+        [S] = @(E) simulateJSRplus(E(1)+1i*E(2), x0(3), x0(4), x0(5), x0(6),...
+            TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
+            TRspgr, TEspgr, alpha_spgr,...
+            TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms);
+        CF = @(E) (S(E) - noisyS(:));
+        [E_tmp] = lsqnonlin(CF,x0(1:2),lb,ub,options(1));
+        x0(1:2) = E_tmp;
+        
+        [S] = @(E) simulateJSRplus(E(1)+1i*E(2), E(3), E(4), E(5), E(6),...
+            TRmprage, TEmprage, alpha_mprage, t_rage, TI, TD, ...
+            TRspgr, TEspgr, alpha_spgr,...
+            TRssfp, TEssfp, alpha_ssfp, phi_ssfp, rf_trms);
+        CF = @(E) (S(E) - noisyS(:));
+        [E_parameters,resNorm,res,exitFlag] = lsqnonlin(CF,x0,lb,ub,options(2));
+    catch ME
+        E_parameters = zeros(1,6);
+        resNorm = 0;
+        res = zeros(1,length([alpha_mprage(:); alpha_spgr(:); alpha_ssfp(:);alpha_ssfp(:)]));
+        exitFlag = 999;
+        disp('Error in lsqnonlin');
+    end
 end
 
 function [CF,J_CF] = JSRplus_CF(E,...
